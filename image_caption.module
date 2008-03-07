@@ -14,18 +14,17 @@
 * Implementation of hook_menu().
 */
 
-function image_caption_menu($may_cache) {
+function image_caption_menu() {
   $items = array();
 
-  if ($may_cache) {
-    $items[] = array(
+    $items['admin/settings/image_caption'] = array(
       'path' => 'admin/settings/image_caption',
       'title' => t('Image Caption Settings'),
       'description' => t('Configure image caption settings.'),
-      'callback' => 'drupal_get_form',
-      'callback arguments' => array('image_caption_admin_settings'),
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('image_caption_admin_settings'),
     );
-  }
+        //'access arguments' => user_access('administer site configuration')
   return $items;
 }
 
