@@ -1,4 +1,4 @@
-$Id$
+;$Id$
 name = Image Caption
 description = Provides a caption for images using jquery.
 version = "5.x-1.0"
