@@ -17,14 +17,14 @@
 function image_caption_menu() {
   $items = array();
 
-    $items['admin/settings/image_caption'] = array(
-      'path' => 'admin/settings/image_caption',
-      'title' => t('Image Caption Settings'),
-      'description' => t('Configure image caption settings.'),
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('image_caption_admin_settings'),
-    );
-        //'access arguments' => user_access('administer site configuration')
+  $items['admin/settings/image_caption'] = array(
+    'title' => t('Image Caption Settings'),
+    'description' => t('Configure image caption settings.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('image_caption_admin_settings'),
+    'access arguments' => array('administer site configuration')
+  );
+
   return $items;
 }
 

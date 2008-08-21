@@ -1,3 +1,4 @@
+;$Id;
 name = "Image Caption"
 description = "Provides a caption for images using jquery."
 core = "6.x"
