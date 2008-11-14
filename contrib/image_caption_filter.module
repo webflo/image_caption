@@ -59,19 +59,19 @@ function doImgTitles($matches) {
   $imgText = $matches[0];
 
   //Get the title out of the <img> tag
-  preg_match ('/title=\"(.+?)\"/i', $imgText, &$matches);
+  preg_match ('/title=\"(.+?)\"/i', $imgText, $matches);
   $title = $matches[1];
 
   //Get the width out of the <img> tag
-  preg_match ('/width=\"(.+?)\"/i', $imgText, &$matches);
+  preg_match ('/width=\"(.+?)\"/i', $imgText, $matches);
   $width = $matches[1];
 
   //Get class out of the <img> tag
-  preg_match ('/class=\"(.+?)\"/i', $imgText, &$matches);
+  preg_match ('/class=\"(.+?)\"/i', $imgText, $matches);
   $class = $matches[1];
 
   //See if there is an alt attribute in the <img> tag, if not insert a LOUD warning
-  preg_match ('/alt=\"(.+?)\"/i', $imgText, &$matches);
+  preg_match ('/alt=\"(.+?)\"/i', $imgText, $matches);
   $alt = $matches[1];
   if (empty($alt)) {
     $alt_warning = '<font size="+3" color="pink" style="line-height:1em">No alternate text on picture! - define alternate text in image properties</font>';
