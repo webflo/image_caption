@@ -8,8 +8,10 @@ $(document).ready(function(){
     var alignment = $(this).attr('align');
     //Clear image styles to prevent conflicts with parent div
     $(this).attr('style','');
-    $(this).wrap("<div class=\"image-caption-container\" style=\"" + style + "; text-align: " + alignment + "\"></div>");
-    $(this).parent().width(imgwidth);
-    $(this).parent().append("<div class=\"image-caption\">" + captiontext + "</div>");
+    $(this).wrap("<span class=\"image-caption-container\" style=\"display:block;" + style + "; text-align: " + alignment + "\"></span>");
+    if(imgwidth != 'undefined' && imgwidth != 0){
+      $(this).parent().width(imgwidth);
+    }
+    $(this).parent().append("<span style=\"display:block;\" class=\"image-caption\">" + captiontext + "</span>");
   });
 });
