@@ -70,10 +70,6 @@ function doImgTitles($matches) {
   preg_match ('/class=\"(.+?)\"/i', $imgText, $matches);
   $class = $matches[1];
 
-  //See if there is an alt attribute in the <img> tag, if not insert a LOUD warning
-  preg_match ('/alt=\"(.+?)\"/i', $imgText, $matches);
-  $alt = $matches[1];
-
   //Only insert the caption and modify the <img> tag if it is has a title attribute and is one of the classes we are interested in
   if (in_array($class, array('image-left', 'image-right', 'standalone-image')) && ($title)) {
     $imgText = preg_replace ('/class=\"(.+?)\"/i', '', $imgText);
