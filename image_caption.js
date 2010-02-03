@@ -7,8 +7,10 @@ $(document).ready(function(){
     var style = $(this).attr('style');
     var alignment = $(this).attr('align');
     //Clear image styles to prevent conflicts with parent div
-    $(this).attr('style','');
-    $(this).wrap("<span class=\"image-caption-container\" style=\"display:block;" + style + "; text-align: " + alignment + "\"></span>");
+    $(this).attr({align:""});
+    $(this).attr({style:""});
+    $(this).wrap("<span class=\"image-caption-container\" style=\"display:block;" + style + "; float: " + alignment + "\"></span>");
+    $(this).parent().addClass('image-caption-container-' + alignment);
     if(imgwidth != 'undefined' && imgwidth != 0){
       $(this).parent().width(imgwidth);
     }
