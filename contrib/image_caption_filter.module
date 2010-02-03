@@ -73,11 +73,6 @@ function doImgTitles($matches) {
   //See if there is an alt attribute in the <img> tag, if not insert a LOUD warning
   preg_match ('/alt=\"(.+?)\"/i', $imgText, $matches);
   $alt = $matches[1];
-  if (empty($alt)) {
-    $alt_warning = '<font size="+3" color="pink" style="line-height:1em">No alternate text on picture! - define alternate text in image properties</font>';
-  } else {
-    $alt_warning = '';
-  }
 
   //Only insert the caption and modify the <img> tag if it is has a title attribute and is one of the classes we are interested in
   if (in_array($class, array('image-left', 'image-right', 'standalone-image')) && ($title)) {
@@ -85,9 +80,9 @@ function doImgTitles($matches) {
     $returnText = "<div class=\"" . $class . "\" style=\"width: " . $width . "px\">"
                   . $imgText 
                   . "<div class=\"caption\">" . $title . "</div></div>";
-    return $returnText . $alt_warning;
+    return $returnText;
   }
-  return $imgText . $alt_warning;
+  return $imgText;
 } //function doImgTitles
 
 ?>
