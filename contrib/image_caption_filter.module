@@ -20,65 +20,79 @@
 * @param arg array that holds the current path as would be returned from arg() function
 * @return help text for the path
 */
-function image_caption_filter_help($path, $arg) {
-  $output = '';
-  switch ($path) {
-    case "admin/help#image_caption_filter":
-      $output = '<p>' .  t("Adds captions to images") . '</p>';
-      break;
-  }
-  return $output;
-} //function image_caption_filter_help
+function _image_caption_filter_tips($filter, $format, $long = FALSE) {
+  return '<p>' . t("Adds captions to images") . '</p>';
+}
 
-//filter hook implementation
-function image_caption_filter_filter($op, $delta = 0, $format = -1, $text = '') {
-  switch ($op) {
-    case 'list':
-      return array(0 => t('Image caption filter'));
+/**
+ * Implements hook_filter_info().
+ */
+function image_caption_filter_filter_info() {
+  $filters['filter_image_caption'] = array(
+    'title' => t('Image caption filter'),
+    'description' => t('Adds captions to images via a filter'),
+    'process callback' => '_filter_image_caption_filter_process',
+    'tips callback' => '_image_caption_filter_tips',
+  );
+ 
+  return $filters;
+}
 
-    case 'description':
-      return t('Adds captions to images via a filter');
+function _filter_image_caption_filter_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+  $text = preg_replace_callback('|(<img.*?>)|s', 'doImgTitles', $text);
 
-    case 'prepare':
-      // Nothing to prepare
-      return $text;
-
-    case "process":
-      //Look for <img> tags and run the doImgTitles function on the <img> tag
-      $text = preg_replace_callback('|(<img.*?>)|s', 'doImgTitles', $text);
-      return $text;
-
-    default:
-      return $text;
-  }
-} //function image_caption_filter_filter
-
+  return $text;
+}
 
 //helper function to do the actual manipulation
 function doImgTitles($matches) {
   $imgText = $matches[0];
 
-  //Get the title out of the <img> tag
-  preg_match ('/title=\"(.+?)\"/i', $imgText, $matches);
-  $title = $matches[1];
+  // Get the title out of the <img> tag.
+  preg_match('/title=\"(.+?)\"/i', $imgText, $matches);
+  $title = isset($matches[1]) ? $matches[1] :  '';
 
-  //Get the width out of the <img> tag
-  preg_match ('/width=\"(.+?)\"/i', $imgText, $matches);
-  $width = $matches[1];
+  // Get the width out of the <img> tag.
+  preg_match('/width=\"(.+?)\"/i', $imgText, $matches);
+  $width = isset($matches[1]) ? $matches[1] :  '';
 
-  //Get class out of the <img> tag
-  preg_match ('/class=\"(.+?)\"/i', $imgText, $matches);
-  $class = $matches[1];
+  // Get class out of the <img> tag.
+  preg_match('/class=\"(.+?)\"/i', $imgText, $matches);
+  $class = isset($matches[1]) ? $matches[1] :  '';
 
   //Only insert the caption and modify the <img> tag if it is has a title attribute and is one of the classes we are interested in
-  if (in_array($class, array('image-left', 'image-right', 'standalone-image')) && ($title)) {
-    $imgText = preg_replace ('/class=\"(.+?)\"/i', '', $imgText);
-    $returnText = "<div class=\"" . $class . "\" style=\"width: " . $width . "px\">"
-                  . $imgText 
-                  . "<div class=\"caption\">" . $title . "</div></div>";
-    return $returnText;
+  if (in_array($class, variable_get('image_caption_class', array('image-left', 'image-right', 'standalone-image'))) && ($title)) {
+    $imgText = preg_replace('/class=\"(.+?)\"/i', '', $imgText);
+    
+    $caption = array(
+      'img' => array(
+        '#type' => 'markup',
+        '#markup' => $imgText,
+      ),
+      'caption' => array(
+        '#theme' => 'container',
+        '#attributes' => array(
+          'class' => 'caption',
+        ),
+        '#children' => $title,
+      ),
+    );
+    
+    $element = array(
+      'image_caption' => array(
+        '#theme' => 'container',
+        '#attributes' => array(
+          'class' => $class
+        ),
+        '#children' => render($caption),
+      ),
+    );
+    
+    if (!empty($width)) {
+      $element['image_caption']['#attributes']['style'] = 'width: ' . $width . 'px;';
+    }
+
+    return render($element);
   }
   return $imgText;
-} //function doImgTitles
-
-?>
+}

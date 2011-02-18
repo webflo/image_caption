@@ -1,5 +1,5 @@
 ; $Id$
 name = Image caption filter
 description = Create captions on images using the title attribute.
-core = 6.x
-version = 6.x-1.x-dev
+core = 7.x
+files[] = image_caption_filter.module
