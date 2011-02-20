@@ -54,8 +54,8 @@ function image_caption_filter_filter_filter_image_caption_settings($form, &$form
  * Implements hook_filter_FILTER_process().
  */
 function image_caption_filter_filter_filter_image_caption_process($text, $filter, $format, $langcode, $cache, $cache_id) {
-  $active_classes = array_filter(explode(' ', $filter->settings['classes']));
-  return preg_replace_callback('|(<img.*?>)|s', '_image_caption_filter_do_img_titles', $text, $active_classes);
+  image_caption_filter_active_classes(array_filter(explode(' ', $filter->settings['classes'])));
+  return preg_replace_callback('|(<img.*?>)|s', '_image_caption_filter_do_img_titles', $text);
 }
 
 /**
@@ -71,9 +71,23 @@ function image_caption_filter_filter_filter_image_caption_tips($filter, $format,
 }
 
 /**
+ * Storage for active class names
+ * 
+ * _image_caption_filter_do_img_titles() is called by preg_replace_callback() and this function allows only one argument.
+ */
+function image_caption_filter_active_classes($classes = NULL) {
+  static $_classes = array();
+  if ($classes != NULL) { 
+    $_classes = $classes; 
+  }
+  
+  return $_classes;
+}
+
+/**
  * Helper function to do the actual manipulation.
  */
-function _image_caption_filter_do_img_titles($img_tag_matches, $active_classes = array()) {
+function _image_caption_filter_do_img_titles($img_tag_matches, $active_classes = NULL) {
   $img_tag = $img_tag_matches[0];
   $return_text = $img_tag;
 
@@ -84,6 +98,12 @@ function _image_caption_filter_do_img_titles($img_tag_matches, $active_classes =
     // formally, class is a space separated list of classes, but we allow all horizontal whitespace in any quantity
     // that's why we use preg_split instead of explode
     $classes = preg_split('/\s+/', $class, null, PREG_SPLIT_NO_EMPTY);
+
+    // get active classes via image_caption_filter_active_classes() because preg_replace_callback() does not support addional arguments.
+    if ($active_classes == NULL) {
+      $active_classes = image_caption_filter_active_classes();
+    }
+
     if (count(array_intersect($classes, $active_classes)) > 0) {
       // only execute this filter on img tags that have a title attribute
       $has_title = preg_match('/title=\"(.+?)\"/i', $img_tag, $matches) > 0;
