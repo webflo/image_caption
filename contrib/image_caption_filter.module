@@ -133,22 +133,24 @@ function _image_caption_filter_do_img_titles($img_tag_matches, $active_classes =
             '#markup' => $img_tag,
           ),
           'caption' => array(
-            '#markup' => 'container',
+            '#type' => 'html_tag',
+            '#tag' => 'span',
             '#attributes' => array(
               'class' => 'caption',
             ),
-            '#children' => $title,
+            '#value' => $title,
           ),
         );
 
         // build the wrapping elemement.
         $element = array(
           'image_caption' => array(
-            '#theme' => 'container',
+            '#type' => 'html_tag',
+            '#tag' => 'span',
             '#attributes' => array(
               'class' => $class
             ),
-            '#children' => render($caption),
+            '#value' => render($caption),
           ),
         );
 
