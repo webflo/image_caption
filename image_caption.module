@@ -11,9 +11,8 @@
 */
 
 /**
-* Implementation of hook_menu().
+* Implements hook_menu().
 */
-
 function image_caption_menu() {
   $items = array();
 
@@ -29,12 +28,12 @@ function image_caption_menu() {
 }
 
 /*
-* Implementation of the hook_admin_settings()
+* Implements the hook_admin_settings()
 */
 function image_caption_admin_settings() {
 
   //node type settings
-  $node_types = node_get_types();
+  $node_types = node_type_get_types();
   foreach ($node_types as $type) {
     $types[$type->type] = $type->name;
   }
@@ -49,15 +48,12 @@ function image_caption_admin_settings() {
 }
 
 /*
-* Implementation of hook_nodeapi()
-* On view, add captioning javascript to page for certain node types
+* Implements hook_node_view()
+* Add captioning javascript to page for certain node types
 */
-function image_caption_nodeapi(&$node, $op) {
-  
-  if ($op == 'view') {
-    if (in_array($node->type, variable_get('image_caption_node_types', array()))) {  
-      $path = drupal_get_path('module', 'image_caption');
-      drupal_add_js($path.'/image_caption.js','module', 'header');
-    }
+function image_caption_node_view($node, $view_mode, $langcode) {
+  if (in_array($node->type, variable_get('image_caption_node_types', array()))) {
+    $path = drupal_get_path('module', 'image_caption');
+    drupal_add_js($path.'/image_caption.js');
   }
 }
